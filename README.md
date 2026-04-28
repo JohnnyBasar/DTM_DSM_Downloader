@@ -5,6 +5,8 @@
 
 A QGIS plugin for downloading official German DGM/DOM raster data from federal-state open data services.
 
+!Early stage development!
+
 Currently supported providers:
 - Sachsen (GeoSN)
 - Sachsen-Anhalt (WCS OpenData Services)
