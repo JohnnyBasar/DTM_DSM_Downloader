@@ -1,7 +1,7 @@
-# README.md
-
-```md
 # Germany DTM/DSM Downloader
+
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+
 
 A QGIS plugin for downloading official German DGM/DOM raster data from federal-state open data services.
 
@@ -97,7 +97,5 @@ Johnny Basar
 
 ## License
 
-GPL-3.0 License
-```
-
----
+- **Source code**: GNU General Public License v3.0 or later (GPL-3.0-or-later)  
+  See `LICENSE`.
