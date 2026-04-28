@@ -1,0 +1,51 @@
+cff-version: 1.2.0
+title: "QWERA Toolbox: Open-source QGIS tools for Wind Erosion Risk Assessment"
+message: "If you use the QWERA toolbox in your research, please cite it as follows:"
+type: software
+authors:
+  - family-names: Schultz
+    given-names: Jonathan
+version: 0.4.0
+doi: 10.5281/zenodo.18337035
+date-released: 2026-02-06
+license: GPL-3.0-or-later
+repository-code: https://github.com/JohnnyBasar/QWERA
+keywords:
+  - Wind erosion
+  - GIS
+  - QGIS
+  - Environmental modelling
+  - Open science
+  - WERA
+  - Wind erosion risk Assessment
+
+
+cff-version: 1.2.0
+title: Germany DTM/DSM Downloader
+message: "If you use this software, please cite it using the metadata below."
+type: software
+authors:
+  - family-names: Basar
+    given-names: Johnny
+    email: gis_help@posteo.de
+repository-code: https://github.com/yourusername/Germany-DTM-DSM-Downloader
+license: GPL-3.0-or-later
+repository-code: https://github.com/JohnnyBasar/DTM_DSM_Downloader
+version: 0.2.1
+date-released: 2026-04-28
+abstract: >
+  QGIS plugin for downloading official German DGM/DOM raster data
+  from federal-state open data services. Currently supports Sachsen,
+  Sachsen-Anhalt, and Brandenburg with optional merging, clipping,
+  and CRS transformation.
+keywords:
+  - QGIS
+  - DTM
+  - DSM
+  - DEM
+  - DGM
+  - DOM
+  - Germany
+  - Open Data
+  - Raster
+  - Geodata
