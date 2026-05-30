@@ -11,8 +11,11 @@ Currently supported providers:
 - Sachsen (GeoSN)
 - Sachsen-Anhalt (WCS OpenData Services)
 - Brandenburg (direct OpenData tile access)
+- Bayern (direct OpenData tile access)
 
 Additional federal states are planned for future releases.
+
+Download newest release here: https://github.com/JohnnyBasar/DTM_DSM_Downloader/releases/download/v0.2.1/germany_dgm_dom_loader_v0.2.1.zip
 
 ---
 
