@@ -37,7 +37,7 @@ Download newest release here: https://github.com/JohnnyBasar/DTM_DSM_Downloader/
 
 ### Manual Installation
 
-1. Download the latest release ZIP from GitHub Releases
+1. Download the latest release ZIP from GitHub Releases (no unzipping!)
 2. Open QGIS
 3. Go to:
    `Plugins → Manage and Install Plugins → Install from ZIP`
