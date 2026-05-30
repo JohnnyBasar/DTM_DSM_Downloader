@@ -1,12 +1,12 @@
 [general]
 name=Germany DTM/DSM Downloader
 qgisMinimumVersion=3.28
-description=Downloads official DGM/DOM raster data from German federal-state open-data services. Early stage development! 
-version=0.2.1
+description=Downloads official DGM/DOM raster data from German federal-state open-data services.
+version=1.0.0
 author=Johnny Basar
 email=gis_help@posteo.de
 about=QGIS plugin for downloading official German DGM/DOM raster data from federal-state open data services. 
-    Current providers include Sachsen via GeoSN, Sachsen-Anhalt via WCS, and Brandenburg via direct OpenData tile access. 
+    Current providers include Sachsen via GeoSN, Sachsen-Anhalt via WCS, Brandenburg via direct OpenData tile access, and Bayern via direct OpenData Metalink/tile access. 
     Additional federal states are planned for future releases. 
     The plugin supports optional tile merging, clipping to extent or polygon shape, loading results directly into QGIS, and optional CRS transformation/reprojection where required. 
     All datasets are provided by the official surveying and geodata authorities of the respective federal states and remain subject to their individual Open Data terms, usage rights, attribution requirements, and license conditions. 
@@ -15,6 +15,7 @@ about=QGIS plugin for downloading official German DGM/DOM raster data from feder
     Sachsen (GeoSN): Landesamt fuer Geobasisinformation Sachsen
     Sachsen-Anhalt: Landesamt fuer Vermessung und Geoinformation Sachsen-Anhalt
     Brandenburg: Landesvermessung und Geobasisinformation Brandenburg (LGB)
+	Bayern: Bayerische Vermessungsverwaltung
 
     The author assumes no liability for the correctness, completeness, legal compliance, or any consequences resulting from the use of downloaded data.
 
@@ -24,3 +25,4 @@ icon=icon.png
 experimental=False
 deprecated=False
 tags=QGIS,DGM,DTM,DOM,DSM,DEM,raster,download,open data,geodata,Germany,GeoSN,WCS,elevation model,surface model,terrain model
+changelog:	1.0.0: added Bayern DOM20 and DGM1. changed product dropdown to federal state specific products. 

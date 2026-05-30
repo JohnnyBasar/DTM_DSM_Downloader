@@ -66,6 +66,8 @@ def product_from_seed_link(seed_link: str) -> str | None:
         return "DGM1"
     if filename.startswith("dom1_"):
         return "DOM1"
+    if filename.startswith("dom20_"):
+        return "DOM20"
     return None
 
 
@@ -74,7 +76,7 @@ def validate_seed_link_product(seed_link: str, selected_product: str):
     if detected is None:
         raise ValueError(
             "Could not detect product from seed link. "
-            "The filename should usually start with 'dgm1_' or 'dom1_'."
+            "The filename should usually start with 'dgm1_', 'dom1_' or 'dom20_'."
         )
 
     if detected.upper() != selected_product.upper():

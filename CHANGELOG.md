@@ -6,6 +6,27 @@ The format is based on Keep a Changelog.
 
 ---
 
+
+## [Version 1.0.0]
+
+### Added
+
+* Added Bayern as supported federal state.
+* Added Bayern DGM1 support.
+* Added Bayern DOM20 support.
+* Added dynamic product selection depending on selected federal state.
+
+### Changed
+
+* Product dropdown is now populated dynamically based on provider/state.
+* Refactored product handling to support different product portfolios per federal state.
+* Bayern DOM20 download now uses direct Bayernwolke tile URLs.
+* Improved extensibility for future products such as DOP.
+
+
+
+---
+
 ## [0.2.1] - 2026-04-28
 
 ### Added

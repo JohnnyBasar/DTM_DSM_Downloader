@@ -15,7 +15,7 @@ Currently supported providers:
 
 Additional federal states are planned for future releases.
 
-Download newest release here: https://github.com/JohnnyBasar/DTM_DSM_Downloader/releases/download/v0.2.1/germany_dgm_dom_loader_v0.2.1.zip
+Download newest release here: https://github.com/JohnnyBasar/DTM_DSM_Downloader/releases/download/v1.0.0/deutschland_dgm_dom_loader_v1.0.0.zip
 
 ---
 
@@ -58,6 +58,9 @@ Provider: Landesamt für Vermessung und Geoinformation Sachsen-Anhalt
 
 ### Brandenburg
 Provider: Landesvermessung und Geobasisinformation Brandenburg (LGB)
+
+### Bayern
+Provider: Bayerische Vermessungsverwaltung
 
 ---
 

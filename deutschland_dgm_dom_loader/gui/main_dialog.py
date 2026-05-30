@@ -34,6 +34,7 @@ from ..tasks.service_query_task import GeoSNServiceQueryTask
 from ..tasks.service_download_task import GeoSNServiceDownloadTask
 from ..tasks.wcs_download_task import WCSDownloadTask
 from ..core.wcs_service import get_coverage_ids, provider_target_authid
+from ..core.config import products_for_state, SUPPORTED_PRODUCTS
 
 
 class GermanyDEMDOMDialog(QWidget):
@@ -46,10 +47,11 @@ class GermanyDEMDOMDialog(QWidget):
         self.setMinimumWidth(390)
 
         self.cmb_state = QComboBox()
-        self.cmb_state.addItems(["Sachsen", "Sachsen-Anhalt", "Brandenburg"])
+        self.cmb_state.addItems(["Sachsen", "Sachsen-Anhalt", "Brandenburg", "Bayern"])
+        self.cmb_state.currentTextChanged.connect(self._update_product_options)
 
         self.cmb_product = QComboBox()
-        self.cmb_product.addItems(["DGM1", "DOM1"])
+        self._update_product_options(self.cmb_state.currentText())
 
         self.txt_folder = QLineEdit()
         self.btn_browse = QPushButton("…")
@@ -81,7 +83,7 @@ class GermanyDEMDOMDialog(QWidget):
         self.chk_reproject_to_project.setChecked(True)
         self.chk_reproject_to_project.setToolTip(
             "Downloads stay in the official provider CRS first "
-            "(Sachsen EPSG:25833, Sachsen-Anhalt EPSG:25832, Brandenburg EPSG:25833). "
+            "(Sachsen EPSG:25833, Sachsen-Anhalt EPSG:25832, Brandenburg EPSG:25833, Bayern EPSG:25832). "
             "Enable this to warp the final GeoTIFF to the current QGIS project CRS."
         )
 
@@ -117,7 +119,7 @@ class GermanyDEMDOMDialog(QWidget):
 
         title = QLabel("Germany DEM/DSM Downloader")
         title.setStyleSheet("font-size: 16px; font-weight: 600;")
-        subtitle = QLabel("Download official DGM/DOM raster data by federal-state provider. Current providers: Sachsen, Sachsen-Anhalt and Brandenburg.")
+        subtitle = QLabel("Download official DGM/DOM raster data by federal-state provider. The available products are adapted to the selected federal state.")
         subtitle.setWordWrap(True)
         subtitle.setStyleSheet("color: #666;")
         layout.addWidget(title)
@@ -149,7 +151,7 @@ class GermanyDEMDOMDialog(QWidget):
         row_folder.addWidget(self.btn_browse)
         output_layout.addLayout(row_folder)
 
-        crs_hint = QLabel("Downloads are requested in the official provider CRS: Sachsen = EPSG:25833, Sachsen-Anhalt = EPSG:25832, Brandenburg = EPSG:25833.")
+        crs_hint = QLabel("Downloads are requested in the official provider CRS: Sachsen = EPSG:25833, Sachsen-Anhalt = EPSG:25832, Brandenburg = EPSG:25833, Bayern = EPSG:25832.")
         crs_hint.setWordWrap(True)
         crs_hint.setStyleSheet("color: #666;")
         output_layout.addWidget(crs_hint)
@@ -190,6 +192,26 @@ class GermanyDEMDOMDialog(QWidget):
 
         self.setLayout(layout)
 
+    def _update_product_options(self, state=None):
+        state = state or self.cmb_state.currentText()
+        previous = self._selected_product() if hasattr(self, "cmb_product") else ""
+        products = products_for_state(state)
+
+        self.cmb_product.blockSignals(True)
+        self.cmb_product.clear()
+        for product in products:
+            label = SUPPORTED_PRODUCTS.get(product, {}).get("label", product)
+            self.cmb_product.addItem(f"{product} — {label}", product)
+
+        if previous in products:
+            self.cmb_product.setCurrentIndex(products.index(previous))
+        elif self.cmb_product.count() > 0:
+            self.cmb_product.setCurrentIndex(0)
+        self.cmb_product.blockSignals(False)
+
+    def _selected_product(self):
+        return self.cmb_product.currentData() or self.cmb_product.currentText().split(" — ", 1)[0]
+
     def log(self, msg):
         self.log_output.append(str(msg))
 
@@ -203,7 +225,7 @@ class GermanyDEMDOMDialog(QWidget):
 
     def use_current_extent(self):
         extent, crs = self.get_selected_extent_and_crs()
-        product = self.cmb_product.currentText()
+        product = self._selected_product()
         provider = self.cmb_state.currentText()
 
         self.log(f"Selected extent: {extent.toString()}")
@@ -211,8 +233,8 @@ class GermanyDEMDOMDialog(QWidget):
         self.log(f"Selected provider: {provider}")
         self.log(f"Selected product: {product}")
 
-        if provider in ("Sachsen-Anhalt", "Brandenburg"):
-            self.log(f"Tile preview is only available for Sachsen/GeoSN. {provider} uses WCS GetCoverage instead.")
+        if provider in ("Sachsen-Anhalt", "Brandenburg", "Bayern"):
+            self.log(f"Tile preview is only available for Sachsen/GeoSN. {provider} uses WCS/direct OpenData downloads instead.")
             return
 
         try:
@@ -229,14 +251,25 @@ class GermanyDEMDOMDialog(QWidget):
             QMessageBox.information(self, "Task running", "A task is already running.")
             return
 
-        product = self.cmb_product.currentText()
+        product = self._selected_product()
         provider = self.cmb_state.currentText()
         extent, crs = self.get_selected_extent_and_crs()
 
         self.progress_bar.setValue(0)
         self._set_ui_busy(True)
 
-        if provider in ("Sachsen-Anhalt", "Brandenburg"):
+        if provider in ("Brandenburg", "Bayern"):
+            self.log(f"{provider} uses direct OpenData tile downloads. No WCS capabilities are required.")
+            self.progress_bar.setValue(100)
+            QMessageBox.information(
+                self,
+                "Direct OpenData provider",
+                f"{provider} uses direct OpenData tile downloads for the selected product."
+            )
+            self._set_ui_busy(False)
+            return
+
+        if provider == "Sachsen-Anhalt":
             self.log(f"Reading {provider} WCS capabilities...")
             try:
                 ids = get_coverage_ids(product, log=self.log, provider=provider)
@@ -267,7 +300,7 @@ class GermanyDEMDOMDialog(QWidget):
             return
 
         target_folder = self.txt_folder.text().strip()
-        product = self.cmb_product.currentText()
+        product = self._selected_product()
         provider = self.cmb_state.currentText()
 
         if not target_folder:
@@ -285,10 +318,10 @@ class GermanyDEMDOMDialog(QWidget):
         self.progress_bar.setValue(0)
         self._set_ui_busy(True)
 
-        if provider in ("Sachsen-Anhalt", "Brandenburg"):
-            self.log(f"Submitting {provider} WCS download task...")
+        if provider in ("Sachsen-Anhalt", "Brandenburg", "Bayern"):
+            self.log(f"Submitting {provider} download task...")
             task = WCSDownloadTask(
-                description=f"Download {product} from {provider} WCS",
+                description=f"Download {product} from {provider}",
                 extent=extent,
                 source_crs=crs,
                 product=product,
@@ -367,7 +400,7 @@ class GermanyDEMDOMDialog(QWidget):
 
         selected_extent, selected_crs = self.get_selected_extent_and_crs()
         polygon_layer = self.get_selected_polygon_layer() if self.chk_clip_polygon.isChecked() else None
-        product = self.cmb_product.currentText()
+        product = self._selected_product()
         provider = self.cmb_state.currentText()
 
         try:
@@ -592,7 +625,7 @@ class GermanyDEMDOMDialog(QWidget):
         clip_extent_enabled = self.chk_clip.isChecked()
         clip_polygon_enabled = self.chk_clip_polygon.isChecked() and polygon_layer is not None
 
-        target_authid = provider_target_authid(provider) if provider in ("Sachsen-Anhalt", "Brandenburg") else "EPSG:25833"
+        target_authid = provider_target_authid(provider) if provider in ("Sachsen-Anhalt", "Brandenburg", "Bayern") else "EPSG:25833"
         project_crs = self._project_crs()
         project_authid = project_crs.authid() if project_crs and project_crs.isValid() else ""
         self.log(f"Provider CRS for post-processing: {target_authid}")
